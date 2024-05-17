@@ -1,65 +1,38 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { ArrowLeft } from 'react-bootstrap-icons';
 
 import { AppContext } from '../contexts/appContext';
 import logo from '../assets/logo192.png'
-
-const Header = styled.header<{ $darkMode: boolean }>`
-  ${
-    props => props.$darkMode &&
-    `
-      color: var(--dark-grey);
-    `
-  }
-`;
-const Nav = styled.nav<{ $darkMode: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-width: 100%;
-  height: var(--navbar-height);
-  padding: 8px 16px;
-
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
-
-  ${
-    props => props.$darkMode &&
-    `
-      background: var(--dark-1);
-    `
-  }
-`;
-
-const BackLink = styled.a`
-  color: var(--dark-grey);
-
-  & :hover {
-    color: var(--bs-blue);
-  }
-`
+import { useLocation } from 'react-router-dom';
+import { URLS } from '../routes';
 
 const NavBar = () => {
   const appContext = React.useContext(AppContext);
+  const location = useLocation();
+
+  const showBackLink = location.pathname !== URLS.DASHBOARD;
 
   return (
-    <Header data-testid='header' $darkMode={true}>
-      <Nav $darkMode={true}>
+    <header data-testid='header' className="text-dark-gray">
+      <nav className="absolute top-0 left-0 w-full min-w-full h-16 px-4 py-2 flex gap-4 justify-between items-center bg-dark-1">
         <div>
-          {/* since this is an external route outside of react, we should use regular anchor tag */}
-          <BackLink href={appContext?.backBtnUrl} aria-label="Back to Dashboard">
-            <ArrowLeft size={32} fontWeight={600} />
-          </BackLink>
+          {
+            showBackLink && (
+              <a
+                href={appContext?.backBtnUrl}
+                aria-label="Back to Dashboard"
+                className="hover:text-blue-500"
+              >
+                <ArrowLeft size={32} fontWeight={600} />
+              </a>
+            )
+          }
         </div>
         <div>
           <img src={logo} width={50} alt='Logo' />
         </div>
-      </Nav>
-    </Header>
+      </nav>
+    </header>
   )
 }
 

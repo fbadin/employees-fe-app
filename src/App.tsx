@@ -11,7 +11,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavBar } from './components/NavBar';
 import { AppContext } from './contexts/appContext';
 import { Dashboard } from './pages/Dashboard';
-import { AppRoot, GlobalStyle, Main } from './App.styles';
 import { EmployeeDetails } from './pages/EmployeeDetails';
 
 const App = () => {
@@ -19,13 +18,12 @@ const App = () => {
 
   return (
     <AppContext.Provider value={{ backBtnUrl, setBackBtnUrl }}>
-      <AppRoot data-testid='app-root'>
-        <GlobalStyle />
+      <div data-testid='app-root' className='h-app-root'>
         <ToastContainer />
         <BrowserRouter>
           <NavBar/>
 
-          <Main data-testid="main" $darkMode={true}>
+          <div data-testid="main" className="bg-dark-2 text-dark-gray min-h-full mt-16">
             <div className="p-3 container">
               <Routes>
                 <Route path="/dashboard/" element={<Dashboard />} />
@@ -34,9 +32,9 @@ const App = () => {
                 <Route path="/" element={<Dashboard />} />
               </Routes>
             </div>
-          </Main>
+          </div>
         </BrowserRouter>
-      </AppRoot>
+      </div>
     </AppContext.Provider>
   );
 }

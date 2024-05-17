@@ -5,6 +5,7 @@ export type EmployeesData = {
   employees: {
     id: string;
     name: string;
+    department: string;
   }[]
 }
 

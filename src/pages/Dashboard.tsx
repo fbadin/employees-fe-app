@@ -42,7 +42,10 @@ const Dashboard = () => {
                 variant="dark"
                 onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
               >
-                {employee.name}
+                <div className='flex justify-between'>
+                  {employee.name}
+                  <div className="text-gray-500">{employee.department}</div>
+                </div>
               </ListGroup.Item>
             )
           })
