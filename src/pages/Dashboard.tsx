@@ -2,21 +2,22 @@ import React from 'react';
 import { Button, Dropdown, Form, InputGroup, ListGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { People, Search, PersonPlus, SortAlphaDown, SortAlphaUp } from 'react-bootstrap-icons';
+import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-bootstrap-icons';
 
-import { EmployeesData, fetchEmployees } from '../api/employees';
+import { DepartmentValue, EmployeesData, EmployeesSortBy, fetchEmployees } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Painel } from '../UI/Panel';
 import { DEPARTMENTS } from '../constants';
-
-type DepartmentValue = typeof DEPARTMENTS[number] | 'All';
+import useDebounce from '../hooks/useDebounce';
 
 const Dashboard = () => {
   const appContext = React.useContext(AppContext);
   const [employees, setEmployees] = React.useState<EmployeesData | undefined>();
   const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentValue> ('All');
-  const [sortedEmployees, setSortedEmployees] = React.useState <'none' | 'asc' | 'desc'> ('none');
+  const [sortedEmployees, setSortedEmployees] = React.useState <EmployeesSortBy> ('none');
+  const [search, setSearch] = React.useState<string>('');
+  const { debouncedValue: debouncedSearch } = useDebounce(search);
   const navigate = useNavigate();
 
   React.useEffect(()=>{
@@ -24,17 +25,19 @@ const Dashboard = () => {
   }, [appContext]);
 
   React.useEffect(()=>{
-    (async () => {
-      const response = await fetchEmployees();
+    handleFetchEmployees();
+  }, [debouncedSearch, selectedDepartment, sortedEmployees]);
 
-      if (response.error_message) {
-        toast.error(response.error_message);
-        return;
-      }
+  const handleFetchEmployees = async () => {
+    const response = await fetchEmployees(debouncedSearch, selectedDepartment, sortedEmployees);
 
-      setEmployees(response.data);
-    })();
-  }, []);
+    if (response.error_message) {
+      toast.error(response.error_message);
+      return;
+    }
+
+    setEmployees(response.data);
+  }
 
   const onDepartmentSelect = (eventKey: any, event: any) => {
     event.preventDefault();
@@ -49,8 +52,6 @@ const Dashboard = () => {
 
   return (
     <div data-testid="main-container">
-
-
       <div className='flex justify-between items-center h-14 min-h-14'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
@@ -62,8 +63,6 @@ const Dashboard = () => {
       </div>
 
       <div className='flex items-center justify-between'>
-
-
         <Dropdown onSelect={onDepartmentSelect}>
           <Dropdown.Toggle className='bg-dark-2 border'>
             {departmentFilterLabel}
@@ -93,39 +92,49 @@ const Dashboard = () => {
 
         </Dropdown>
 
-        <div className='flex items-center justify-center'>
+        <div className='flex items-center justify-center gap-2'>
+          <div data-testid='sort-button'
+            onClick={()=>{
+              if (sortedEmployees === 'none') {
+                setSortedEmployees('asc');
+              } else if (sortedEmployees === 'asc') {
+                setSortedEmployees('desc');
+              } else {
+                setSortedEmployees('none');
+              }
+            }}
+            className={`border p-2 rounded-md cursor-pointer hover:bg-gray-500 ${activeSortClass}`}
+          >
+            {
+              sortedEmployees === 'none' || sortedEmployees === 'asc' ? (
+                <SortAlphaDown />
+              ) : (
+                <SortAlphaUp />
+              )
+            }
+          </div>
 
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="basic-addon1"><Search /></InputGroup.Text>
+          <InputGroup>
+            <InputGroup.Text>
+              {
+                search.length ? (
+                  <XLg className='cursor-pointer' onClick={()=>setSearch('')} />
+                ) : (
+                  <Search />
+                )
+              }
+            </InputGroup.Text>
             <Form.Control
               placeholder="Search"
               aria-label="Search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
             />
           </InputGroup>
         </div>
-
-        <div
-          onClick={()=>{
-            if (sortedEmployees === 'none') {
-              setSortedEmployees('asc');
-            } else if (sortedEmployees === 'asc') {
-              setSortedEmployees('desc');
-            } else {
-              setSortedEmployees('none');
-            }
-          }}
-          className={`border p-2 rounded-md cursor-pointer hover:bg-gray-500 ${activeSortClass}`}
-        >
-          {
-            sortedEmployees === 'none' || sortedEmployees === 'asc' ? (
-              <SortAlphaDown />
-            ) : (
-              <SortAlphaUp />
-            )
-          }
-        </div>
       </div>
-      <ListGroup className="mt-3">
+
+      <ListGroup className="mt-4">
         {
           showZeroState ? (
             <Painel className='bg-dark-gray flex justify-center items-center gap-4'>
