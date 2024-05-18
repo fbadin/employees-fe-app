@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 import { NavBar } from './components/NavBar';
 import { AppContext } from './contexts/appContext';
@@ -27,7 +27,7 @@ const App = () => {
             <div className="p-3 container">
               <Routes>
                 <Route path="/dashboard/" element={<Dashboard />} />
-                <Route path="/employees/:id" element={<EmployeeDetails />} />
+                <Route path="/employees/:id?" element={<EmployeeDetails />} />
                 {/* TODO return a generic component */}
                 <Route path="/" element={<Dashboard />} />
               </Routes>

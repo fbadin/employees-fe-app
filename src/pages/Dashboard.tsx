@@ -55,14 +55,16 @@ const Dashboard = () => {
       <div className='flex justify-between items-center h-14 min-h-14'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
-        <Button variant="success" onClick={()=>null}>
+        <Button variant="success" onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
           <div className='flex justify-center items-center gap-2 '>
             <PersonPlus /> New Employee
           </div>
         </Button>
       </div>
 
-      <div className='flex items-center justify-between'>
+      <div
+        className='flex items-center justify-between flex-col gap-2 sm:flex-row sm:mt-0'
+      >
         <Dropdown onSelect={onDepartmentSelect}>
           <Dropdown.Toggle className='bg-dark-2 border'>
             {departmentFilterLabel}
@@ -114,7 +116,7 @@ const Dashboard = () => {
             }
           </div>
 
-          <InputGroup>
+          <InputGroup className='w-72'>
             <InputGroup.Text>
               {
                 search.length ? (
@@ -125,10 +127,11 @@ const Dashboard = () => {
               }
             </InputGroup.Text>
             <Form.Control
-              placeholder="Search"
+              placeholder="Search by name or position"
               aria-label="Search"
               value={search}
               onChange={e => setSearch(e.target.value)}
+              className='w-60'
             />
           </InputGroup>
         </div>

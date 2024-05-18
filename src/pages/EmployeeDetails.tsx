@@ -38,6 +38,10 @@ const EmployeeDetails = () => {
     })()
   }, [id]);
 
+  const isNewEmployee = id === undefined;
+
+  console.log('id', id)
+
   return (
     <Painel>
       {
@@ -45,6 +49,9 @@ const EmployeeDetails = () => {
           'Loading'
         ) : (
           <div className="flex flex-col items-center">
+            <Label className='mt-3'>
+              { isNewEmployee ? 'New Employee' : 'Edit Employee' }
+            </Label>
             {/* <img src={companyDetails.picture_url} className="w-24 sm:w-1/4 rounded border-solid border-2" alt="Company's logo" />
             <Label className='mt-3'>Company Info</Label>
             <div className="pl-3">

@@ -5,7 +5,7 @@ const API_V1 = `${BASE_URL}/api/v1`;
 
 export const URLS = Object.freeze({
   DASHBOARD: `/dashboard/`,
-  EMPLOYEE_DETAILS: (id: string) => `/employees/${id}`,
+  EMPLOYEE_DETAILS: (id: string | null) => `/employees/${id ? id : '' }`,
 });
 
 export const API_URLS = Object.freeze({
