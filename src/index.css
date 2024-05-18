@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* override bootstrap utility. !important couldn`t be removed */
+.bg-primary {
+	--tw-bg-opacity: 1;
+	background-color: rgb(123 49 146 / var(--tw-bg-opacity)) !important;
+}

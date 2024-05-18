@@ -55,7 +55,7 @@ const Dashboard = () => {
       <div className='flex justify-between items-center h-14 min-h-14'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
-        <Button variant="success" onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
+        <Button className='bg-primary border-dark-subtle' onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
           <div className='flex justify-center items-center gap-2 '>
             <PersonPlus /> New Employee
           </div>
@@ -140,7 +140,7 @@ const Dashboard = () => {
       <ListGroup className="mt-4">
         {
           showZeroState ? (
-            <Painel className='bg-dark-gray flex justify-center items-center gap-4'>
+            <Painel className='flex justify-center items-center gap-4'>
                There are no employees found
             </Painel>
           ) : (

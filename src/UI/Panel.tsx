@@ -9,7 +9,7 @@ const Painel = ({ children, className }: Props) => {
 	const customClassName = `${className ? className : ''}`;
 
 	return (
-		<div className={`rounded-md text-dark-1 bg-dark-grey p-3 ${customClassName}`}>
+		<div className={`bg-dark-gray rounded-md text-dark-1 bg-dark-grey p-3 ${customClassName}`}>
 			{children}
 		</div>
 	)
