@@ -16,12 +16,13 @@ module.exports = {
       height: {
         'app-root': 'calc(100vh - 64px)',
       },
+      backgroundColor: {
+        'dark-1': 'rgb(48, 49, 52)',
+        'dark-2': '#202124',
+        'dark-gray': 'rgb(189, 193, 198)'
+      }
     },
-    backgroundColor: {
-      'dark-1': 'rgb(48, 49, 52)',
-      'dark-2': '#202124',
-      'dark-gray': 'rgb(189, 193, 198)'
-    }
+
   },
   plugins: [],
 }
