@@ -1,6 +1,6 @@
 import { DEPARTMENTS } from "../constants";
 import { API_URLS } from "../routes"
-import { api } from "./lib"
+import { api } from "../lib/api"
 
 export type EmployeesData = {
   employees: {

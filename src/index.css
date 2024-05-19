@@ -2,20 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* override bootstrap utility. !important couldn`t be removed */
-.bg-primary {
-	background-color: rgb(123 49 146) !important;
-}
-
-.border-primary {
-	border-color: rgb(123 49 146) !important;
-}
-
 .hover\:bg-primary:hover {
-	background-color: rgb(75, 30, 89) !important;
+  background-color: rgb(75, 30, 89) !important;
 }
 
-.hover\:border-primary {
-	border-color: rgb(75, 30, 89) !important;
+.hover\:border-primary:hover {
+  border-color: rgb(75, 30, 89) !important;
 }

@@ -3,18 +3,25 @@ import { Button as ReactButton } from 'react-bootstrap';
 
 type Props = {
 	children: React.ReactNode;
-	variant?: 'primary';
+	variant?: 'primary' | 'danger';
 	className?: string;
+	disabled?: boolean;
 	onClick: ()=>void;
 }
 
-const Button = ({ children, variant, className, onClick }: Props) => {
-	const primaryClasses = variant === `primary` ? 'bg-primary border-primary hover:bg-primary hover:border-primary' : ''
+const Button = ({
+	children,
+	variant,
+	className,
+	disabled,
+	onClick
+}: Props) => {
+	const primaryClasses = variant === `primary` ? '!bg-primary !border-primary hover:bg-primary hover:border-primary' : ''
 	const customClassName = `${primaryClasses} ${className ? className : ''}`;
 
 	return (
-		<ReactButton className={customClassName} onClick={onClick}>
-			{ children }
+		<ReactButton className={customClassName} onClick={onClick} variant={variant} disabled={disabled}>
+			{children}
 		</ReactButton>
 	)
 }

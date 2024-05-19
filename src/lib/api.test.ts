@@ -1,4 +1,4 @@
-import { api } from './lib'; // Assuming your lib.ts file exports the Api class
+import { api } from './api';
 
 type MyData = {
   data: string

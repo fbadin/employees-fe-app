@@ -52,7 +52,7 @@ const Dashboard = () => {
   const activeSortClass = sortedEmployees === 'asc' || sortedEmployees === 'desc' ? 'bg-slate-500' : '';
 
   return (
-    <div data-testid="main-container">
+    <div data-testid="main-container" className='mt-3'>
       <div className='flex justify-between items-center h-14 min-h-14'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
