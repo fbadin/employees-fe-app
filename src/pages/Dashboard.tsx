@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dropdown, Form, InputGroup, ListGroup } from 'react-bootstrap';
+import { Dropdown, Form, InputGroup, ListGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-bootstrap-icons';
@@ -10,6 +10,7 @@ import { URLS } from '../routes';
 import { Painel } from '../UI/Panel';
 import { DEPARTMENTS } from '../constants';
 import useDebounce from '../hooks/useDebounce';
+import { Button } from '../UI/Button';
 
 const Dashboard = () => {
   const appContext = React.useContext(AppContext);
@@ -55,7 +56,7 @@ const Dashboard = () => {
       <div className='flex justify-between items-center h-14 min-h-14'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
-        <Button className='bg-primary border-dark-subtle' onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
+        <Button variant='primary' onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
           <div className='flex justify-center items-center gap-2 '>
             <PersonPlus /> New Employee
           </div>

@@ -7,7 +7,6 @@ import {
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 import { NavBar } from './components/NavBar';
 import { AppContext } from './contexts/appContext';
 import { Dashboard } from './pages/Dashboard';

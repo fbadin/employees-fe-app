@@ -1,0 +1,16 @@
+@import "bootstrap/scss/bootstrap.scss";
+@import '~bootstrap/scss/utilities';
+
+$enable-important-utilities: false;
+
+// Example: Override the margin utility class
+.my-custom-margin {
+  margin: 1rem;
+}
+
+// Example: Remove the padding utility class (using map-remove)
+@import "bootstrap/scss/utilities/api"; // Assuming you've installed Bootstrap
+
+$utilities: map-remove($utilities, "background-color");
+$utilities: map-remove($utilities, "color");
+$utilities: map-remove($utilities, "bg-color");

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -12,6 +12,7 @@ import { URLS } from '../routes';
 import { Label } from '../UI/Label';
 import { Painel } from '../UI/Panel';
 import { Toast } from '../UI/Toast';
+import { Button } from '../UI/Button';
 
 const EmployeeDetails = () => {
   const appContext = React.useContext(AppContext);
@@ -133,7 +134,17 @@ const EmployeeDetails = () => {
             feedbackType="invalid"
           />
         </Form.Group>
-        <Button type="submit">Submit form</Button>
+
+        <div className='mt-4 flex justify-between items-center w-full'>
+          <div>
+            {
+              !isNewEmployee && (
+                <Button onClick={()=>setShowDeleteModal(true)}>Delete Employee</Button>
+              )
+            }
+          </div>
+          <Button variant='primary' onClick={()=>null}>Update Employee</Button>
+        </div>
       </Form>
 
       <div className="flex flex-col items-center">
@@ -178,13 +189,7 @@ const EmployeeDetails = () => {
           }
         </div> */}
 
-        {
-          !isNewEmployee && (
-            <div className="mt-4 flex justify-start w-full">
-              <Button variant="danger" onClick={()=>setShowDeleteModal(true)}>Delete Employee</Button>
-            </div>
-          )
-        }
+
 
         {/* <Modal show={showDeleteModal} onHide={()=>setShowDeleteModal(false)}>
           <Modal.Header closeButton className="bg-danger">
