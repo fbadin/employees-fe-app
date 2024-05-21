@@ -11,6 +11,7 @@ import { NavBar } from './components/NavBar';
 import { AppContext } from './contexts/appContext';
 import { Dashboard } from './pages/Dashboard';
 import { EmployeeDetails } from './pages/EmployeeDetails';
+import { CommonTemplate } from './templates/common_template';
 
 const App = () => {
   const [backBtnUrl, setBackBtnUrl] = React.useState<string>("");
@@ -21,17 +22,14 @@ const App = () => {
         <ToastContainer />
         <BrowserRouter>
           <NavBar/>
-
-          <div data-testid="main" className="bg-dark-2 text-dark-gray min-h-full mt-16">
-            <div className="p-3 container">
-              <Routes>
-                <Route path="/dashboard/" element={<Dashboard />} />
-                <Route path="/employees/:id?" element={<EmployeeDetails />} />
-                {/* TODO return a generic component */}
-                <Route path="/" element={<Dashboard />} />
-              </Routes>
-            </div>
-          </div>
+          <CommonTemplate>
+            <Routes>
+              <Route path="/dashboard/" element={<Dashboard />} />
+              <Route path="/employees/:id?" element={<EmployeeDetails />} />
+              {/* TODO return a generic component */}
+              <Route path="/" element={<Dashboard />} />
+            </Routes>
+          </CommonTemplate>
         </BrowserRouter>
       </div>
     </AppContext.Provider>

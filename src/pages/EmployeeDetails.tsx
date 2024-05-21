@@ -68,7 +68,10 @@ const EmployeeDetails = () => {
 
   return (
     <>
-      <Painel className='mt-4'>
+      <h1 className='text-lg'>
+        { isNewEmployee ? 'New Employee' : 'Edit Employee' }
+      </h1>
+      <Painel className='mt-3'>
         {
           isLoading ? (
             <div className='w-full flex justify-center'>
@@ -76,9 +79,7 @@ const EmployeeDetails = () => {
             </div>
           ) : (
             <>
-              <h1 className='text-lg'>
-                { isNewEmployee ? 'New Employee' : 'Edit Employee' }
-              </h1>
+
 
               <Form noValidate validated={validated} onSubmit={handleSubmit} className='mt-3'>
                 <Row className="mb-3">

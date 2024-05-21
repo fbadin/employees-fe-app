@@ -52,19 +52,19 @@ const Dashboard = () => {
   const activeSortClass = sortedEmployees === 'asc' || sortedEmployees === 'desc' ? 'bg-slate-500' : '';
 
   return (
-    <div data-testid="main-container" className='mt-3'>
-      <div className='flex justify-between items-center h-14 min-h-14'>
+    <>
+      <div className='flex justify-between items-center'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
         <Button variant='primary' onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
-          <div className='flex justify-center items-center gap-2 '>
-            <PersonPlus /> New Employee
+          <div className='flex justify-center items-center gap-2'>
+            <PersonPlus /> <div className='whitespace-nowrap' >New Employee</div>
           </div>
         </Button>
       </div>
 
       <div
-        className='flex items-center justify-between flex-col gap-2 sm:flex-row sm:mt-0'
+        className='flex items-center justify-between flex-col gap-2 mt-3 sm:flex-row sm:mt-0'
       >
         <Dropdown onSelect={onDepartmentSelect}>
           <Dropdown.Toggle className='bg-dark-2 border'>
@@ -163,7 +163,7 @@ const Dashboard = () => {
           )
         }
       </ListGroup>
-    </div>
+    </>
   )
 }
 
