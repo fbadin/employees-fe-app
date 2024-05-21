@@ -14,6 +14,7 @@ import { Painel } from '../UI/Panel';
 import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
+import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 
 const EmployeeDetails = () => {
   const appContext = React.useContext(AppContext);
@@ -119,10 +120,10 @@ const EmployeeDetails = () => {
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
-
                 </Row>
+
                 <Row className="mb-3">
-                <Form.Group as={Col} md="4" controlId="validationCustom01">
+                  <Form.Group as={Col} md="4" controlId="validationCustom01">
                     <Form.Label>Department</Form.Label>
                     <Form.Control
                       required
@@ -159,16 +160,58 @@ const EmployeeDetails = () => {
                   </Form.Group>
                 </Row>
 
+                {
+                  !isNewEmployee && (
+                    <Row className="mb-3">
+                      <Form.Group as={Col} md="4">
+                        <Form.Label>Created At</Form.Label>
+                        <Form.Control
+                          readOnly
+                          type="date"
+                          placeholder="Created At"
+                          defaultValue={formatDate(employeeDetails?.created_at.toString())}
+                          className='bg-slate-400 focus:bg-slate-400'
+                        />
+                      </Form.Group>
+                      <Form.Group as={Col} md="4">
+                        <Form.Label>Updated At</Form.Label>
+                        <InputGroup>
+                          <Form.Control
+                            readOnly
+                            type="date"
+                            placeholder="Updated At"
+                            defaultValue={formatDate(employeeDetails?.updated_at.toString())}
+                            className='bg-slate-400 focus:bg-slate-400'
+                          />
+                        </InputGroup>
+                      </Form.Group>
+                    </Row>
+                  )
+                }
 
                 <div className='mt-4 flex justify-between items-center w-full'>
                   <div>
                     {
                       !isNewEmployee && (
-                        <Button variant='danger' onClick={()=>setShowDeleteModal(true)}>Delete Employee</Button>
+                        <Button variant='danger' onClick={()=>setShowDeleteModal(true)}>
+                          <div className='flex justify-center items-center gap-2'>
+                            <Trash /> Delete Employee
+                          </div>
+                        </Button>
                       )
                     }
                   </div>
-                  <Button variant='primary' onClick={()=>null}>Update Employee</Button>
+                  <Button variant='primary' onClick={()=>null}>
+                    <div className='flex justify-center items-center gap-2'>
+                      {
+                        isNewEmployee ? (
+                          <><PersonPlus /> Create Employee</>
+                        ) : (
+                          <><Floppy /> Save Employee</>
+                        )
+                      }
+                    </div>
+                  </Button>
                 </div>
               </Form>
             </>
