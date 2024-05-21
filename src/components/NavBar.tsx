@@ -10,7 +10,7 @@ const NavBar = () => {
   const appContext = React.useContext(AppContext);
   const location = useLocation();
 
-  const showBackLink = location.pathname !== URLS.DASHBOARD;
+  const showBackLink = location.pathname.includes(URLS.EMPLOYEE_DETAILS(null));
 
   return (
     <header data-testid='header' className="text-dark-gray">

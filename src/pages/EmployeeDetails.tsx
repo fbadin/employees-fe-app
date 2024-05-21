@@ -5,16 +5,17 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 
 import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
-import { Label } from '../UI/Label';
 import { Painel } from '../UI/Panel';
 import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
-import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const EmployeeDetails = () => {
   const appContext = React.useContext(AppContext);
@@ -24,16 +25,8 @@ const EmployeeDetails = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
   const [validated, setValidated] = React.useState(false);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    setValidated(true);
-  };
+  const [email, setEmail] = React.useState(employeeDetails?.email || '');
+  const [isEmailValid, setIsEmailValid] = React.useState(true);
 
   React.useEffect(()=>{
     appContext?.setBackBtnUrl(URLS.DASHBOARD);
@@ -61,11 +54,27 @@ const EmployeeDetails = () => {
     })()
   }, [id]);
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    setIsEmailValid(emailRegex.test(value));
+  };
+
+  const handleBlur = () => {
+    setIsEmailValid(emailRegex.test(email));
+  };
+
   const isNewEmployee = id === undefined;
-
-  console.log('id', id)
-
-
 
   return (
     <>
@@ -80,8 +89,6 @@ const EmployeeDetails = () => {
             </div>
           ) : (
             <>
-
-
               <Form noValidate validated={validated} onSubmit={handleSubmit} className='mt-3'>
                 <Row className="mb-3">
                   <Form.Group as={Col} md="4" controlId="validationCustom01">
@@ -94,7 +101,7 @@ const EmployeeDetails = () => {
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustomUsername">
+                  <Form.Group as={Col} md="4">
                     <Form.Label>Email</Form.Label>
                     <InputGroup hasValidation>
                       <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -102,12 +109,18 @@ const EmployeeDetails = () => {
                         type="text"
                         placeholder="Email"
                         aria-describedby="inputGroupPrepend"
-                        defaultValue={employeeDetails?.email}
+                        value={email}
+                        onChange={handleEmailChange}
+                        onBlur={handleBlur}
+                        isInvalid={!isEmailValid}
                         required
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Please choose an Email.
-                      </Form.Control.Feedback>
+                      <>
+                        <Form.Control.Feedback type='valid'>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">
+                          Please choose a valid Email
+                        </Form.Control.Feedback>
+                      </>
                     </InputGroup>
                   </Form.Group>
                   <Form.Group as={Col} md="4" controlId="validationCustom02">
@@ -201,7 +214,7 @@ const EmployeeDetails = () => {
                       )
                     }
                   </div>
-                  <Button variant='primary' onClick={()=>null}>
+                  <Button variant='primary' onClick={()=> setValidated(true) }>
                     <div className='flex justify-center items-center gap-2'>
                       {
                         isNewEmployee ? (
@@ -215,7 +228,6 @@ const EmployeeDetails = () => {
                 </div>
               </Form>
             </>
-
           )
         }
 

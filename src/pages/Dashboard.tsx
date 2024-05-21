@@ -26,19 +26,17 @@ const Dashboard = () => {
   }, [appContext]);
 
   React.useEffect(()=>{
-    handleFetchEmployees();
+    (async () => {
+      const response = await fetchEmployees(debouncedSearch, selectedDepartment, sortedEmployees);
+
+      if (response.error_message) {
+        toast.error(response.error_message);
+        return;
+      }
+
+      setEmployees(response.data);
+    })();
   }, [debouncedSearch, selectedDepartment, sortedEmployees]);
-
-  const handleFetchEmployees = async () => {
-    const response = await fetchEmployees(debouncedSearch, selectedDepartment, sortedEmployees);
-
-    if (response.error_message) {
-      toast.error(response.error_message);
-      return;
-    }
-
-    setEmployees(response.data);
-  }
 
   const onDepartmentSelect = (eventKey: any, event: any) => {
     event.preventDefault();
