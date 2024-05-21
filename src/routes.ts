@@ -1,4 +1,4 @@
-import { DepartmentValue, EmployeesSortBy } from "./api/employees";
+import { DepartmentFilter, EmployeesSortBy } from "./api/employees";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const API_V1 = `${BASE_URL}/api/v1`;
@@ -9,7 +9,7 @@ export const URLS = Object.freeze({
 });
 
 export const API_URLS = Object.freeze({
-  EMPLOYEES_INDEX: (search: string, department: DepartmentValue, sortBy: EmployeesSortBy) => {
+  EMPLOYEES_INDEX: (search: string, department: DepartmentFilter, sortBy: EmployeesSortBy) => {
     const encodedSearch = encodeURIComponent(search);
     const encodedDepartment = encodeURIComponent(department);
     const encodedSortBy = encodeURIComponent(sortBy);

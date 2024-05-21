@@ -22,7 +22,10 @@ module.exports = {
         'dark-1': 'rgb(48, 49, 52)',
         'dark-2': '#202124',
         'dark-gray': 'rgb(168 174 182)'
-      }
+      },
+      borderColor: {
+        'custom': 'var(--bs-border-color)', // Custom border color
+      },
     },
 
   },

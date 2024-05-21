@@ -2,13 +2,16 @@ import { DEPARTMENTS } from "../constants";
 import { API_URLS } from "../routes"
 import { api } from "../lib/api"
 
+export type DepartmentValue = typeof DEPARTMENTS[number];
+
 export type EmployeesData = {
   employees: {
     id: string;
     name: string;
-    department: string;
+    position: string;
+    department: DepartmentValue;
   }[]
-}
+};
 
 export type EmployeeDetails = {
   id: string;
@@ -22,10 +25,10 @@ export type EmployeeDetails = {
   updated_at: Date;
 }
 
-export type DepartmentValue = typeof DEPARTMENTS[number] | 'All';
 export type EmployeesSortBy = 'none' | 'asc' | 'desc';
+export type DepartmentFilter = DepartmentValue | 'All';
 
-export const fetchEmployees = (search: string, department: DepartmentValue, sortBy: EmployeesSortBy) => {
+export const fetchEmployees = (search: string, department: DepartmentFilter, sortBy: EmployeesSortBy) => {
   return api.get<EmployeesData>(API_URLS.EMPLOYEES_INDEX(search, department, sortBy));
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Spinner } from 'react-bootstrap';
+import { Dropdown, Modal, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -7,15 +7,14 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 
-import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee } from '../api/employees';
+import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee, DepartmentValue } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Painel } from '../UI/Panel';
 import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { DEPARTMENTS, emailRegex } from '../constants';
 
 const EmployeeDetails = () => {
   const appContext = React.useContext(AppContext);
@@ -25,8 +24,17 @@ const EmployeeDetails = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
   const [validated, setValidated] = React.useState(false);
-  const [email, setEmail] = React.useState(employeeDetails?.email || '');
-  const [isEmailValid, setIsEmailValid] = React.useState(true);
+  const [name, setName] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('');
+  const [position, setPosition] = React.useState<string>('');
+  const [salary, setSalary] = React.useState<string>('');
+  const [startDate, setStartDate] = React.useState<string>('');
+  const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentValue> (DEPARTMENTS[0]);
+  const [isNameValid, setIsNameValid] = React.useState <boolean | undefined> (undefined);
+  const [isEmailValid, setIsEmailValid] = React.useState <boolean | undefined> (undefined);
+  const [isPositionValid, setIsPositionValid] = React.useState <boolean | undefined> (undefined);
+  const [isSalaryValid, setIsSalaryValid] = React.useState <boolean | undefined> (undefined);
+  const [isStartDateValid, setIsStartDateValid] = React.useState <boolean | undefined> (undefined);
 
   React.useEffect(()=>{
     appContext?.setBackBtnUrl(URLS.DASHBOARD);
@@ -49,32 +57,101 @@ const EmployeeDetails = () => {
           return;
         }
 
-        setEmployeeDetails(response.data);
+        const employeeData = response.data;
+        setEmployeeDetails(employeeData);
+        setName(employeeData?.name || '');
+        setEmail(employeeData?.email || '');
+        setPosition(employeeData?.position || '');
+        setSalary(employeeData?.salary || '');
+        setSelectedDepartment(employeeData?.department as DepartmentValue);
+        setStartDate(employeeData?.start_date.toString() || '');
       }
     })()
   }, [id]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setName(name);
+
+    if (!name.length) {
+      setIsNameValid(undefined);
+      return;
     }
 
-    setValidated(true);
+    setIsNameValid(name.trim().split(' ').length >= 2);
+    setValidated(false);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
+
+    if (!value.length) {
+      setIsEmailValid(undefined);
+      return;
+    }
+
     setIsEmailValid(emailRegex.test(value));
+    setValidated(false);
   };
 
-  const handleBlur = () => {
-    setIsEmailValid(emailRegex.test(email));
+  const handlePositionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const position = e.target.value;
+    setPosition(position);
+
+    if (!position.length) {
+      setIsPositionValid(undefined);
+      return;
+    }
+
+    setIsPositionValid(position.length > 3);
+    setValidated(false);
+  };
+
+  const onDepartmentSelect = (eventKey: any, event: any) => {
+    event.preventDefault();
+    event.persist();
+    event.stopPropagation();
+    setSelectedDepartment(eventKey);
+    setValidated(false);
+  }
+
+  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const salary = e.target.value;
+    setSalary(salary);
+
+    if (!salary.length) {
+      setIsSalaryValid(undefined);
+      return;
+    }
+
+    setIsSalaryValid(salary.length > 4);
+    setValidated(false);
+  };
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = e.target.value;
+    setStartDate(startDate);
+
+    if (!startDate.length) {
+      setIsStartDateValid(undefined);
+      return;
+    }
+
+    setIsStartDateValid(!!startDate.length);
+    setValidated(false);
+  };
+
+  const handleSubmit = () => {
+
   };
 
   const isNewEmployee = id === undefined;
+  const isValidForm = name.length > 0 &&
+    email.length > 0 &&
+    position.length > 0 &&
+    salary.length > 0 &&
+    startDate.length > 0;
 
   return (
     <>
@@ -89,18 +166,25 @@ const EmployeeDetails = () => {
             </div>
           ) : (
             <>
-              <Form noValidate validated={validated} onSubmit={handleSubmit} className='mt-3'>
+              <Form noValidate validated={validated} className='mt-3'>
                 <Row className="mb-3">
-                  <Form.Group as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label>First name</Form.Label>
+                  <Form.Group as={Col} md="4" controlId="validationFullName">
+                    <Form.Label>Employee's name</Form.Label>
                     <Form.Control
                       required
                       type="text"
                       placeholder="Full name"
-                      defaultValue={employeeDetails?.name}
+                      value={name}
+                      onChange={handleNameChange}
+                      isInvalid={!name.length || isNameValid === undefined ? undefined : !isNameValid}
+                      isValid={!name.length ? undefined : isNameValid}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      Please type the employee's full name.
+                    </Form.Control.Feedback>
                   </Form.Group>
+
                   <Form.Group as={Col} md="4">
                     <Form.Label>Email</Form.Label>
                     <InputGroup hasValidation>
@@ -111,8 +195,8 @@ const EmployeeDetails = () => {
                         aria-describedby="inputGroupPrepend"
                         value={email}
                         onChange={handleEmailChange}
-                        onBlur={handleBlur}
-                        isInvalid={!isEmailValid}
+                        isInvalid={!email.length || isEmailValid === undefined ? undefined : !isEmailValid}
+                        isValid={!email.length ? undefined : isEmailValid}
                         required
                       />
                       <>
@@ -123,53 +207,83 @@ const EmployeeDetails = () => {
                       </>
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustom02">
+                  <Form.Group as={Col} md="4">
                     <Form.Label>Position</Form.Label>
                     <Form.Control
                       required
                       type="text"
                       placeholder="Position"
+                      onChange={handlePositionChange}
+                      isInvalid={!position.length || isPositionValid === undefined ? undefined : !isPositionValid}
+                      isValid={!position.length ? undefined : isPositionValid}
                       defaultValue={employeeDetails?.position}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a position
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Row>
 
                 <Row className="mb-3">
-                  <Form.Group as={Col} md="4" controlId="validationCustom01">
+                  <Form.Group as={Col} md="4">
                     <Form.Label>Department</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      placeholder="Department"
-                      defaultValue={employeeDetails?.department}
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    <Dropdown onSelect={onDepartmentSelect}>
+                      <Dropdown.Toggle className='w-full bg-white text-black border border-solid border-custom'>
+                        {selectedDepartment}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {
+                          DEPARTMENTS.map((department) => {
+                            return (
+                              <Dropdown.Item
+                                key={department}
+                                eventKey={department}
+                                active={selectedDepartment === department}
+                              >
+                                {department}
+                              </Dropdown.Item>
+                            )
+                          })
+                        }
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustomUsername">
+
+                  <Form.Group as={Col} md="4">
                     <Form.Label>Salary</Form.Label>
                     <InputGroup hasValidation>
                       <Form.Control
-                        type="text"
+                        type="number"
                         placeholder="Salary"
                         aria-describedby="inputGroupPrepend"
                         defaultValue={employeeDetails?.salary}
+                        onChange={handleSalaryChange}
+                        isInvalid={!salary.length || isSalaryValid === undefined ? undefined : !isSalaryValid}
+                        isValid={!salary.length ? undefined : isSalaryValid}
                         required
                       />
+                      <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
                       <Form.Control.Feedback type="invalid">
-                        Please choose a salary.
+                        Please choose a salary per year. 5 Digits minimum.
                       </Form.Control.Feedback>
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group as={Col} md="4" controlId="validationCustom02">
+                  <Form.Group as={Col} md="4">
                     <Form.Label>Start Date</Form.Label>
                     <Form.Control
                       required
                       type="date"
                       placeholder="Start Date"
                       defaultValue={formatDate(employeeDetails?.start_date.toString())}
+                      onChange={handleStartDateChange}
+                      isInvalid={!startDate.length || isStartDateValid === undefined ? undefined : !isStartDateValid}
+                      isValid={!startDate.length ? undefined : isStartDateValid}
                     />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a start date
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Row>
 
@@ -214,7 +328,11 @@ const EmployeeDetails = () => {
                       )
                     }
                   </div>
-                  <Button variant='primary' onClick={()=> setValidated(true) }>
+                  <Button
+                    variant='primary'
+                    disabled={!isValidForm}
+                    onClick={()=> setValidated(true)}
+                  >
                     <div className='flex justify-center items-center gap-2'>
                       {
                         isNewEmployee ? (

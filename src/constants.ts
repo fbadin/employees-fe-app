@@ -4,3 +4,5 @@ export const DEPARTMENTS = [
   'Human Resources',
   'Finances'
 ] as const;
+
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

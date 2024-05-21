@@ -1,10 +1,10 @@
 import React from 'react';
-import { Dropdown, Form, InputGroup, ListGroup } from 'react-bootstrap';
+import { Col, Dropdown, Form, InputGroup, ListGroup, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-bootstrap-icons';
 
-import { DepartmentValue, EmployeesData, EmployeesSortBy, fetchEmployees } from '../api/employees';
+import { DepartmentFilter, EmployeesData, EmployeesSortBy, fetchEmployees } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Painel } from '../UI/Panel';
@@ -15,7 +15,7 @@ import { Button } from '../UI/Button';
 const Dashboard = () => {
   const appContext = React.useContext(AppContext);
   const [employees, setEmployees] = React.useState<EmployeesData | undefined>();
-  const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentValue> ('All');
+  const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentFilter> ('All');
   const [sortedEmployees, setSortedEmployees] = React.useState <EmployeesSortBy> ('none');
   const [search, setSearch] = React.useState<string>('');
   const { debouncedValue: debouncedSearch } = useDebounce(search);
@@ -90,7 +90,6 @@ const Dashboard = () => {
               })
             }
           </Dropdown.Menu>
-
         </Dropdown>
 
         <div className='flex items-center justify-center gap-2'>
@@ -151,10 +150,11 @@ const Dashboard = () => {
                   variant="dark"
                   onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
                 >
-                  <div className='flex justify-between'>
-                    {employee.name}
-                    <div className="text-gray-500">{employee.department}</div>
-                  </div>
+                  <Row>
+                    <Col>{employee.name}</Col>
+                    <Col className='text-gray-500'>{employee.position}</Col>
+                    <Col className="text-gray-500 text-right">{employee.department}</Col>
+                  </Row>
                 </ListGroup.Item>
               )
             })
