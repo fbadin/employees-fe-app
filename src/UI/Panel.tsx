@@ -5,7 +5,7 @@ type Props = {
 	className?: string;
 }
 
-const Painel = ({ children, className }: Props) => {
+const Panel = ({ children, className }: Props) => {
 	const customClassName = `${className ? className : ''}`;
 
 	return (
@@ -15,4 +15,4 @@ const Painel = ({ children, className }: Props) => {
 	)
 }
 
-export { Painel };
+export { Panel };

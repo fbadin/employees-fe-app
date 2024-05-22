@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Dropdown, Form, InputGroup, ListGroup, Row } from 'react-bootstrap';
+import { Col, Dropdown, Form, InputGroup, ListGroup, Row, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-bootstrap-icons';
@@ -7,7 +7,7 @@ import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-boots
 import { DepartmentFilter, EmployeesData, EmployeesSortBy, fetchEmployees } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
-import { Painel } from '../UI/Panel';
+import { Panel } from '../UI/Panel';
 import { DEPARTMENTS } from '../constants';
 import useDebounce from '../hooks/useDebounce';
 import { Button } from '../UI/Button';
@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [search, setSearch] = React.useState<string>('');
   const { debouncedValue: debouncedSearch } = useDebounce(search);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
   const employees = appContext?.employees;
   const setEmployees = appContext?.setEmployees;
 
@@ -28,7 +29,11 @@ const Dashboard = () => {
 
   React.useEffect(()=>{
     (async () => {
+      setIsLoading(true);
+
       const response = await fetchEmployees(debouncedSearch, selectedDepartment, sortedEmployees);
+
+      setIsLoading(false);
 
       if (response.error_message) {
         toast.error(response.error_message);
@@ -136,47 +141,58 @@ const Dashboard = () => {
         </Dropdown>
       </div>
 
-      <ListGroup className="mt-4">
-        {
-          showZeroState ? (
-            <Painel className='flex justify-center items-center gap-4'>
-               There are no employees found
-            </Painel>
-          ) : (
-            <>
-              <ListGroup.Item
-                  action
-                  key={'1'}
-                  variant="dark"
-                >
-                  <Row>
-                    <Col className='font-bold'>Name</Col>
-                    <Col className='font-bold'>Position</Col>
-                    <Col className='font-bold'>Department</Col>
-                  </Row>
-                </ListGroup.Item>
-                {
-                  employees?.employees.map((employee) => {
-                    return (
-                      <ListGroup.Item
-                        action
-                        key={employee.id}
-                        variant="light"
-                        onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
-                      >
-                        <Row>
-                          <Col>{employee.name}</Col>
-                          <Col className='text-gray-500'>{employee.position}</Col>
-                          <Col className="text-gray-500">{employee.department}</Col>
-                        </Row>
-                      </ListGroup.Item>
-                    )
-                  })
-                }
-            </>
-          )
-        }
-      </ListGroup>
+      {
+        isLoading ? (
+          <Panel className="mt-4">
+            <div className='w-full flex justify-center'>
+              <Spinner animation="border" variant="primary" />
+            </div>
+          </Panel>
+        ) : (
+          <ListGroup className="mt-4">
+            {
+              showZeroState ? (
+                <Panel className='flex justify-center items-center gap-4'>
+                  There are no employees found
+                </Panel>
+              ) : (
+                <>
+                  <ListGroup.Item
+                      action
+                      key={'1'}
+                      variant="dark"
+                    >
+                      <Row>
+                        <Col className='font-bold'>Name</Col>
+                        <Col className='font-bold'>Position</Col>
+                        <Col className='font-bold'>Department</Col>
+                      </Row>
+                    </ListGroup.Item>
+                    {
+                      employees?.employees.map((employee) => {
+                        return (
+                          <ListGroup.Item
+                            action
+                            key={employee.id}
+                            variant="light"
+                            onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
+                          >
+                            <Row>
+                              <Col>{employee.name}</Col>
+                              <Col className='text-gray-500'>{employee.position}</Col>
+                              <Col className="text-gray-500">{employee.department}</Col>
+                            </Row>
+                          </ListGroup.Item>
+                        )
+                      })
+                    }
+                </>
+              )
+            }
+          </ListGroup>
+        )
+      }
+
     </>
   )
 }

@@ -10,7 +10,7 @@ import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee, DepartmentValue, EmployeeCreateParams, createEmployee, updateEmployee } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
-import { Painel } from '../UI/Panel';
+import { Panel } from '../UI/Panel';
 import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
@@ -199,7 +199,7 @@ const EmployeeDetails = () => {
       <h1 className='text-lg'>
         { isNewEmployee ? 'New Employee' : 'Edit Employee' }
       </h1>
-      <Painel className='mt-3'>
+      <Panel className='mt-3'>
         {
           isLoading ? (
             <div className='w-full flex justify-center'>
@@ -389,7 +389,7 @@ const EmployeeDetails = () => {
             </>
           )
         }
-      </Painel>
+      </Panel>
       <Modal show={showDeleteModal} onHide={()=>setShowDeleteModal(false)} className='text-white'>
         <Modal.Header closeButton className="bg-danger">
           <Modal.Title >Delete {employeeDetails?.name}</Modal.Title>
