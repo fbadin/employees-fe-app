@@ -14,7 +14,7 @@ const NavBar = () => {
 
   return (
     <header data-testid='header' className="text-dark-gray">
-      <nav className="absolute top-0 left-0 w-full min-w-full h-16 px-4 py-2 flex gap-4 justify-between items-center bg-dark-1">
+      <nav data-testid='nav' className="absolute top-0 left-0 w-full min-w-full h-16 px-4 py-2 flex gap-4 justify-between items-center bg-dark-1">
         <div>
           {
             showBackLink && (

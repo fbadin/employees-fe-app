@@ -55,8 +55,7 @@ class Api {
     const options = {
       ...params,
       headers: {
-        'Content-Type': 'application/json',
-        ...(!!userToken && { 'Authorization': userToken })
+        'Content-Type': 'application/json'
       }
     };
 

@@ -4,20 +4,8 @@ type MyData = {
   data: string
 }
 
-beforeEach(()=>{
-  Storage.prototype.getItem = jest.fn().mockImplementation((key)=>{
-    expect(key).toBe('token');
-    return 'Bearer 102030'
-  })
-});
-
 describe('api', () => {
   it('GET request', async () => {
-    Storage.prototype.getItem = jest.fn().mockImplementation((key)=>{
-      expect(key).toBe('token');
-      return undefined;
-    })
-
     const data = 'this is working!';
     const mockedFetch = jest.fn((url, options) => {
       return Promise.resolve({
@@ -38,30 +26,6 @@ describe('api', () => {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
-    expect(response.data).toBe(data);
-  });
-
-  it('GET request when authenticated', async () => {
-    const url = 'https://example.com/api';
-    const data = 'this is working!';
-    const mockedFetch = jest.fn(() => {
-      return Promise.resolve({
-        status: 200,
-        ok: true,
-        json: async () => data,
-      });
-    }) as jest.Mock;
-    global.fetch = mockedFetch;
-
-    const response = await api.get<MyData>(url);
-
-    expect(mockedFetch).toHaveBeenCalledWith(url, {
-      method: 'GET',
-      headers: {
-          "Authorization": "Bearer 102030",
-          'Content-Type': 'application/json',
-        },
     });
     expect(response.data).toBe(data);
   });
@@ -94,7 +58,6 @@ describe('api', () => {
       });
     }) as jest.Mock;
 
-
     const response = await api.get<MyData>(url);
     expect(response.error_message).toBe(errorMessage);
   });
@@ -111,11 +74,6 @@ describe('api', () => {
   });
 
   it('POST request', async () => {
-    Storage.prototype.getItem = jest.fn().mockImplementation((key)=>{
-      expect(key).toBe('token');
-      return undefined;
-    })
-
     const data = 'got response from api post!';
     const mockedFetch = jest.fn((url, options) => {
       return Promise.resolve({
@@ -134,6 +92,33 @@ describe('api', () => {
 
     expect(mockedFetch).toHaveBeenCalledWith(url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(backendData)
+    });
+    expect(response.data).toBe(data);
+  });
+
+  it('PUT/PATCH request', async () => {
+    const data = 'response data from PUT request';
+    const mockedFetch = jest.fn((url, options) => {
+      return Promise.resolve({
+        status: 200,
+        ok: true,
+        json: async () => {
+         return data;
+        },
+      });
+    }) as jest.Mock;
+    global.fetch = mockedFetch;
+
+    const url = 'https://example.com/api/123';
+    const backendData = { x: 123 };
+    const response = await api.put<MyData>(url, { body: backendData });
+
+    expect(mockedFetch).toHaveBeenCalledWith(url, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
