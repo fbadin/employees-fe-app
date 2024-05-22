@@ -61,37 +61,7 @@ const Dashboard = () => {
         </Button>
       </div>
 
-      <div
-        className='flex items-center justify-between flex-col gap-2 mt-3 sm:flex-row sm:mt-0'
-      >
-        <Dropdown onSelect={onDepartmentSelect}>
-          <Dropdown.Toggle className='bg-dark-2 border'>
-            {departmentFilterLabel}
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item
-              eventKey={'All'}
-              active={selectedDepartment === 'All'}
-            >
-              All
-            </Dropdown.Item>
-            {
-              DEPARTMENTS.map((department) => {
-                return (
-                  <Dropdown.Item
-                    key={department}
-                    eventKey={department}
-                    active={selectedDepartment === department}
-                  >
-                    {department}
-                  </Dropdown.Item>
-                )
-              })
-            }
-          </Dropdown.Menu>
-        </Dropdown>
-
+      <div className='flex items-center justify-between flex-col gap-2 mt-3 sm:flex-row sm:mt-0'>
         <div className='flex items-center justify-center gap-2'>
           <div data-testid='sort-button'
             onClick={()=>{
@@ -133,6 +103,34 @@ const Dashboard = () => {
             />
           </InputGroup>
         </div>
+
+        <Dropdown onSelect={onDepartmentSelect}>
+          <Dropdown.Toggle className='bg-dark-2 border'>
+            {departmentFilterLabel}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item
+              eventKey={'All'}
+              active={selectedDepartment === 'All'}
+            >
+              All
+            </Dropdown.Item>
+            {
+              DEPARTMENTS.map((department) => {
+                return (
+                  <Dropdown.Item
+                    key={department}
+                    eventKey={department}
+                    active={selectedDepartment === department}
+                  >
+                    {department}
+                  </Dropdown.Item>
+                )
+              })
+            }
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
 
       <ListGroup className="mt-4">
@@ -142,22 +140,37 @@ const Dashboard = () => {
                There are no employees found
             </Painel>
           ) : (
-            employees?.employees.map((employee) => {
-              return (
-                <ListGroup.Item
+            <>
+              <ListGroup.Item
                   action
-                  key={employee.id}
+                  key={'1'}
                   variant="dark"
-                  onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
                 >
                   <Row>
-                    <Col>{employee.name}</Col>
-                    <Col className='text-gray-500'>{employee.position}</Col>
-                    <Col className="text-gray-500 text-right">{employee.department}</Col>
+                    <Col className='font-bold'>Name</Col>
+                    <Col className='font-bold'>Position</Col>
+                    <Col className='font-bold'>Department</Col>
                   </Row>
                 </ListGroup.Item>
-              )
-            })
+                {
+                  employees?.employees.map((employee) => {
+                    return (
+                      <ListGroup.Item
+                        action
+                        key={employee.id}
+                        variant="light"
+                        onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
+                      >
+                        <Row>
+                          <Col>{employee.name}</Col>
+                          <Col className='text-gray-500'>{employee.position}</Col>
+                          <Col className="text-gray-500">{employee.department}</Col>
+                        </Row>
+                      </ListGroup.Item>
+                    )
+                  })
+                }
+            </>
           )
         }
       </ListGroup>
