@@ -7,7 +7,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 
-import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee, DepartmentValue } from '../api/employees';
+import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee, DepartmentValue, EmployeeCreateParams, createEmployee, updateEmployee } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Painel } from '../UI/Panel';
@@ -15,6 +15,7 @@ import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
 import { DEPARTMENTS, emailRegex } from '../constants';
+import { toast } from 'react-toastify';
 
 const EmployeeDetails = () => {
   const appContext = React.useContext(AppContext);
@@ -27,7 +28,7 @@ const EmployeeDetails = () => {
   const [name, setName] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [position, setPosition] = React.useState<string>('');
-  const [salary, setSalary] = React.useState<string>('');
+  const [salary, setSalary] = React.useState<number>(0);
   const [startDate, setStartDate] = React.useState<string>('');
   const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentValue> (DEPARTMENTS[0]);
   const [isNameValid, setIsNameValid] = React.useState <boolean | undefined> (undefined);
@@ -40,34 +41,38 @@ const EmployeeDetails = () => {
     appContext?.setBackBtnUrl(URLS.DASHBOARD);
   }, [appContext])
 
-  React.useEffect(()=>{
-    (async () => {
-      if (id) {
-        setIsLoading(true);
+  const handleFetchEmployee = React.useCallback(async () => {
+    if (!id) {
+      return;
+    }
 
-        const response = await fetchEmployeeDetails(id);
+    setIsLoading(true);
 
-        setIsLoading(false);
+    const response = await fetchEmployeeDetails(id);
 
-        if (response.error_message) {
-          Toast({
-            type: 'error',
-            message: response.error_message
-          });
-          return;
-        }
+    setIsLoading(false);
 
-        const employeeData = response.data;
-        setEmployeeDetails(employeeData);
-        setName(employeeData?.name || '');
-        setEmail(employeeData?.email || '');
-        setPosition(employeeData?.position || '');
-        setSalary(employeeData?.salary || '');
-        setSelectedDepartment(employeeData?.department as DepartmentValue);
-        setStartDate(employeeData?.start_date.toString() || '');
-      }
-    })()
+    if (response.error_message) {
+      Toast({
+        type: 'error',
+        message: response.error_message
+      });
+      return;
+    }
+
+    const employeeData = response.data;
+    setEmployeeDetails(employeeData);
+    setName(employeeData?.name || '');
+    setEmail(employeeData?.email || '');
+    setPosition(employeeData?.position || '');
+    setSalary(employeeData?.salary || 0);
+    setSelectedDepartment(employeeData?.department as DepartmentValue);
+    setStartDate(employeeData?.start_date.toString() || '');
   }, [id]);
+
+  React.useEffect(()=>{
+    handleFetchEmployee();
+  }, [id, handleFetchEmployee]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
@@ -83,15 +88,15 @@ const EmployeeDetails = () => {
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
+    const email = e.target.value;
+    setEmail(email);
 
-    if (!value.length) {
+    if (!email.length) {
       setIsEmailValid(undefined);
       return;
     }
 
-    setIsEmailValid(emailRegex.test(value));
+    setIsEmailValid(emailRegex.test(email));
     setValidated(false);
   };
 
@@ -117,15 +122,16 @@ const EmployeeDetails = () => {
   }
 
   const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const salary = e.target.value;
+    const sSalary = e.target.value;
+    const salary = parseInt(sSalary);
     setSalary(salary);
 
-    if (!salary.length) {
+    if (!sSalary.length) {
       setIsSalaryValid(undefined);
       return;
     }
 
-    setIsSalaryValid(salary.length > 4);
+    setIsSalaryValid(sSalary.length > 4);
     setValidated(false);
   };
 
@@ -142,16 +148,51 @@ const EmployeeDetails = () => {
     setValidated(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setValidated(true);
 
+    if (!isValidForm) {
+      return;
+    }
+
+    const createParams: EmployeeCreateParams = {
+      name,
+      email,
+      position,
+      department: selectedDepartment,
+      salary,
+      start_date: new Date(startDate).toISOString(),
+    }
+
+    if (isNewEmployee) {
+      const response = await createEmployee(createParams)
+
+      if (response.error_message) {
+        toast.error(response.error_message);
+        return;
+      } else {
+        toast.success(`Employee ${name} created with success!`)
+        navigate(URLS.DASHBOARD)
+      }
+    } else {
+      const response = await updateEmployee(id, createParams)
+
+      if (response.error_message) {
+        toast.error(response.error_message);
+        return;
+      } else {
+        toast.success(`Employee ${name} updated with success!`);
+        handleFetchEmployee();
+      }
+    }
   };
 
   const isNewEmployee = id === undefined;
-  const isValidForm = name.length > 0 &&
-    email.length > 0 &&
-    position.length > 0 &&
-    salary.length > 0 &&
-    startDate.length > 0;
+  const isValidForm = name.trim().split(' ').length >= 2 &&
+    emailRegex.test(email) &&
+    position.length > 3 &&
+    salary.toString().length > 4 &&
+    !!startDate.length;
 
   return (
     <>
@@ -259,8 +300,8 @@ const EmployeeDetails = () => {
                         aria-describedby="inputGroupPrepend"
                         defaultValue={employeeDetails?.salary}
                         onChange={handleSalaryChange}
-                        isInvalid={!salary.length || isSalaryValid === undefined ? undefined : !isSalaryValid}
-                        isValid={!salary.length ? undefined : isSalaryValid}
+                        isInvalid={!salary.toString().length || isSalaryValid === undefined ? undefined : !isSalaryValid}
+                        isValid={!salary.toString().length ? undefined : isSalaryValid}
                         required
                       />
                       <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
@@ -331,14 +372,14 @@ const EmployeeDetails = () => {
                   <Button
                     variant='primary'
                     disabled={!isValidForm}
-                    onClick={()=> setValidated(true)}
+                    onClick={handleSubmit}
                   >
                     <div className='flex justify-center items-center gap-2'>
                       {
                         isNewEmployee ? (
-                          <><PersonPlus /> Create Employee</>
+                          <><PersonPlus /> Save Employee</>
                         ) : (
-                          <><Floppy /> Save Employee</>
+                          <><Floppy /> Update Employee</>
                         )
                       }
                     </div>
@@ -348,7 +389,6 @@ const EmployeeDetails = () => {
             </>
           )
         }
-
       </Painel>
       <Modal show={showDeleteModal} onHide={()=>setShowDeleteModal(false)} className='text-white'>
         <Modal.Header closeButton className="bg-danger">

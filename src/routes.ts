@@ -16,4 +16,7 @@ export const API_URLS = Object.freeze({
     return `${API_V1}/employees?search=${encodedSearch}&department=${encodedDepartment}&sortBy=${encodedSortBy}`;
   },
   EMPLOYEES_DETAILS: (id: string) => `${API_V1}/employees/${id}/`,
+  CREATE_EMPLOYEE: `${API_V1}/employees/`,
+  UPDATE_EMPLOYEE: (id: string) => `${API_V1}/employees/${id}`,
+  DELETE_EMPLOYEE: (id: string) => `${API_V1}/employees/${id}`,
 });

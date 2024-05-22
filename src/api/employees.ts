@@ -19,7 +19,7 @@ export type EmployeeDetails = {
   email: string;
   position: string;
   department: string;
-  salary: string;
+  salary: number;
   start_date: Date;
   created_at: Date;
   updated_at: Date;
@@ -36,6 +36,33 @@ export const fetchEmployeeDetails = (id: string) => {
   return api.get<EmployeeDetails>(API_URLS.EMPLOYEES_DETAILS(id));
 }
 
+export type EmployeeCreateParams = {
+  name: string;
+  email: string;
+  position: string;
+  department: DepartmentValue;
+  salary: number;
+  start_date: string;
+}
+
+export const createEmployee = (createParams: EmployeeCreateParams) => {
+  const params = {
+    body: {
+      ...createParams
+    }
+  }
+  return api.post<EmployeeDetails>(API_URLS.CREATE_EMPLOYEE, params);
+}
+
+export const updateEmployee = (id: string, updateParams: EmployeeCreateParams) => {
+  const params = {
+    body: {
+      ...updateParams
+    }
+  }
+  return api.put<EmployeeDetails>(API_URLS.UPDATE_EMPLOYEE(id), params);
+}
+
 export const deleteEmployee = (id: string) => {
-  return api.delete<{}>(API_URLS.EMPLOYEES_DETAILS(id), {});
+  return api.delete<{}>(API_URLS.DELETE_EMPLOYEE(id), {});
 }

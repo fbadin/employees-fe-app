@@ -102,6 +102,17 @@ class StaticApi {
     return api.submit<T>(url, postParams);
   }
 
+  static put<T>(url: string, params: Params): Promise<ApiResponse<T>> {
+    const api = StaticApi.initializeApi();
+
+    const postParams = {
+      ...params,
+      method: 'PUT'
+    };
+
+    return api.submit<T>(url, postParams);
+  }
+
   static delete<T>(url: string, params: Params): Promise<ApiResponse<T>> {
     const api = StaticApi.initializeApi();
 
