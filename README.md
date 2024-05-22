@@ -89,13 +89,13 @@ This sample project is only available for local testing.
 
 - Implemented a custom hook `useDebounce` to prevent over-fetching data from the employees' index endpoint.
 - Created custom API utilities to wrap the fetch API, enhancing scalability over networking and ensuring strong data-typing on responses.
-- Developed custom UI components such as Button, Panel, and Toast.
+- Developed custom UI components such as Button and a Panel.
 - Added automated tests using Jest for most of the components.
 
 ---
 
 ## The Backend
 
-The backend was developed using Node.js, Express.js, and MongoDB. Feel free to contact the developer if you wish to test the local database on your machine.
+The backend was developed using Node.js, Express.js, and MongoDB. Feel free to contact the developer if you wish to test the backend server on your local machine.
 
 ---

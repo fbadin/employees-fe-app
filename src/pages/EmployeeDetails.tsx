@@ -11,7 +11,6 @@ import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmploy
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Panel } from '../UI/Panel';
-import { Toast } from '../UI/Toast';
 import { Button } from '../UI/Button';
 import { formatDate } from '../lib/utils';
 import { DEPARTMENTS, emailRegex } from '../constants';
@@ -53,10 +52,7 @@ const EmployeeDetails = () => {
     setIsLoading(false);
 
     if (response.error_message) {
-      Toast({
-        type: 'error',
-        message: response.error_message
-      });
+      toast.error(response.error_message);
       return;
     }
 
@@ -410,15 +406,9 @@ const EmployeeDetails = () => {
             setIsLoading(false);
 
             if (response.error_message) {
-              Toast({
-                type: 'error',
-                message: 'Oops. Something went wrong',
-              });
+              toast.error('Oops. Something went wrong');
             } else {
-              Toast({
-                type: 'success',
-                message: `${employeeDetails?.name} was deleted`,
-              });
+              toast.success(`${employeeDetails?.name} was deleted`);
               navigate(URLS.DASHBOARD);
             }
           }}>
