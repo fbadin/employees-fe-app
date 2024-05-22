@@ -24,8 +24,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "cp development.env .env && PORT=3001 react-scripts start",
-    "build": "cp production.env .env && react-scripts build && cp build/index.html ../app/templates/index-react.html",
+    "start": "react-scripts start",
+    "build": "echo 'NOT AVAILABLE'",
     "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject"
   },

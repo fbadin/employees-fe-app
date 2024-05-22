@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { EmployeesData } from './api/employees';
 
 import { AppContext } from './contexts/appContext';
 import { Dashboard } from './pages/Dashboard';
@@ -15,9 +16,10 @@ import { CommonTemplate } from './templates/common_template';
 
 const App = () => {
   const [backBtnUrl, setBackBtnUrl] = React.useState<string>("");
+  const [employees, setEmployees] = React.useState<EmployeesData | undefined>();
 
   return (
-    <AppContext.Provider value={{ backBtnUrl, setBackBtnUrl }}>
+    <AppContext.Provider value={{ backBtnUrl, setBackBtnUrl, employees, setEmployees }}>
       <div data-testid='app-root' className='h-app-root'>
         <BrowserRouter>
           <CommonTemplate>

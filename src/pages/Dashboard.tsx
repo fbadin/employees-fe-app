@@ -14,12 +14,13 @@ import { Button } from '../UI/Button';
 
 const Dashboard = () => {
   const appContext = React.useContext(AppContext);
-  const [employees, setEmployees] = React.useState<EmployeesData | undefined>();
   const [selectedDepartment, setSelectedDepartment] = React.useState <DepartmentFilter> ('All');
   const [sortedEmployees, setSortedEmployees] = React.useState <EmployeesSortBy> ('none');
   const [search, setSearch] = React.useState<string>('');
   const { debouncedValue: debouncedSearch } = useDebounce(search);
   const navigate = useNavigate();
+  const employees = appContext?.employees;
+  const setEmployees = appContext?.setEmployees;
 
   React.useEffect(()=>{
     appContext?.setBackBtnUrl(URLS.DASHBOARD);
@@ -34,9 +35,11 @@ const Dashboard = () => {
         return;
       }
 
-      setEmployees(response.data);
+      if (setEmployees) {
+        setEmployees(response.data as EmployeesData);
+      }
     })();
-  }, [debouncedSearch, selectedDepartment, sortedEmployees]);
+  }, [setEmployees, debouncedSearch, selectedDepartment, sortedEmployees]);
 
   const onDepartmentSelect = (eventKey: any, event: any) => {
     event.preventDefault();
