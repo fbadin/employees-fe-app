@@ -50,8 +50,6 @@ class Api {
   }
 
   private fetch = async (url: string, params?: Params): Promise<Response> => {
-    const userToken = localStorage.getItem('token');
-
     const options = {
       ...params,
       headers: {
