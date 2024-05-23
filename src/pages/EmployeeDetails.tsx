@@ -7,7 +7,15 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { Floppy, PersonPlus, Trash } from 'react-bootstrap-icons';
 
-import { fetchEmployeeDetails, EmployeeDetails as TEmployeeDetails, deleteEmployee, DepartmentValue, EmployeeCreateParams, createEmployee, updateEmployee } from '../api/employees';
+import {
+  fetchEmployeeDetails,
+  EmployeeDetails as TEmployeeDetails,
+  deleteEmployee,
+  DepartmentValue,
+  EmployeeCreateParams,
+  createEmployee,
+  updateEmployee
+} from '../api/employees';
 import { AppContext } from '../contexts/appContext';
 import { URLS } from '../routes';
 import { Panel } from '../UI/Panel';
@@ -222,7 +230,7 @@ const EmployeeDetails = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Form.Group as={Col} md="4">
+                  <Form.Group as={Col} md="4" controlId="validationEmail">
                     <Form.Label>Email</Form.Label>
                     <InputGroup hasValidation>
                       <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -244,7 +252,7 @@ const EmployeeDetails = () => {
                       </>
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group as={Col} md="4">
+                  <Form.Group as={Col} md="4" controlId="validationPosition">
                     <Form.Label>Position</Form.Label>
                     <Form.Control
                       required
@@ -263,7 +271,7 @@ const EmployeeDetails = () => {
                 </Row>
 
                 <Row className="mb-3">
-                  <Form.Group as={Col} md="4">
+                  <Form.Group as={Col} md="4" controlId="departmentGroup">
                     <Form.Label>Department</Form.Label>
                     <Dropdown onSelect={onDepartmentSelect}>
                       <Dropdown.Toggle className='w-full bg-white text-black border border-solid border-custom'>
@@ -287,7 +295,7 @@ const EmployeeDetails = () => {
                     </Dropdown>
                   </Form.Group>
 
-                  <Form.Group as={Col} md="4">
+                  <Form.Group as={Col} md="4" controlId="salaryGroup">
                     <Form.Label>Salary</Form.Label>
                     <InputGroup hasValidation>
                       <Form.Control
@@ -306,7 +314,7 @@ const EmployeeDetails = () => {
                       </Form.Control.Feedback>
                     </InputGroup>
                   </Form.Group>
-                  <Form.Group as={Col} md="4">
+                  <Form.Group as={Col} md="4" controlId="startDateGroup">
                     <Form.Label>Start Date</Form.Label>
                     <Form.Control
                       required

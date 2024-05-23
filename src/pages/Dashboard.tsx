@@ -58,7 +58,7 @@ const Dashboard = () => {
   const activeSortClass = sortedEmployees === 'asc' || sortedEmployees === 'desc' ? 'bg-slate-500' : '';
 
   return (
-    <>
+    <div data-testid='dashboard'>
       <div className='flex justify-between items-center'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
@@ -145,7 +145,7 @@ const Dashboard = () => {
         isLoading ? (
           <Panel className="mt-4">
             <div className='w-full flex justify-center'>
-              <Spinner animation="border" variant="primary" />
+              <Spinner animation="border" variant="primary" aria-label='Loading Spinner' />
             </div>
           </Panel>
         ) : (
@@ -193,7 +193,7 @@ const Dashboard = () => {
         )
       }
 
-    </>
+    </div>
   )
 }
 

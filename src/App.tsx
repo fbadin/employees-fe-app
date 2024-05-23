@@ -12,7 +12,7 @@ import { EmployeesData } from './api/employees';
 import { AppContext } from './contexts/appContext';
 import { Dashboard } from './pages/Dashboard';
 import { EmployeeDetails } from './pages/EmployeeDetails';
-import { CommonTemplate } from './templates/common_template';
+import { CommonTemplate } from './templates/CommonTemplate';
 
 const App = () => {
   const [backBtnUrl, setBackBtnUrl] = React.useState<string>("");
