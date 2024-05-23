@@ -7,6 +7,13 @@ A Dashboard project to manage Employees, created using Create React App, Tailwin
 
 ---
 
+## Demo
+
+[![Video Thumbnail](https://www.buddyget.net/static/img/pictures/2bd33242-370e-40c2-b2ae-8625f30dda51.png)](https://drive.google.com/file/d/19C17Y1L3P6fLAU6oyZW1Xad0PQRD4MgU/view?usp=sharing)
+
+
+---
+
 ## Install the Node.js Dependencies
 
 Ensure you have a recent version of Node.js running on your local machine, then run:
