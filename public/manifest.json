@@ -1,6 +1,6 @@
 {
-  "short_name": "Paays App",
-  "name": "Paays APP",
+  "short_name": "Employees App",
+  "name": "employees-app",
   "icons": [
     {
       "src": "favicon.ico",
