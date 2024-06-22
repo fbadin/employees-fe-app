@@ -3,6 +3,7 @@ import { Col, Dropdown, Form, InputGroup, ListGroup, Row, Spinner } from 'react-
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Search, PersonPlus, SortAlphaDown, SortAlphaUp, XLg } from 'react-bootstrap-icons';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { DepartmentFilter, EmployeesData, EmployeesSortBy, fetchEmployees } from '../api/employees';
 import { AppContext } from '../contexts/appContext';
@@ -11,6 +12,8 @@ import { Panel } from '../UI/Panel';
 import { DEPARTMENTS } from '../constants';
 import useDebounce from '../hooks/useDebounce';
 import { Button } from '../UI/Button';
+import { RootState } from '../state/store';
+import { setUsers } from '../state/employees/actions';
 
 const Dashboard = () => {
   const appContext = React.useContext(AppContext);
@@ -20,8 +23,9 @@ const Dashboard = () => {
   const { debouncedValue: debouncedSearch } = useDebounce(search);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
-  const employees = appContext?.employees;
-  const setEmployees = appContext?.setEmployees;
+  const employeesStore = useSelector((state: RootState) => state.employees);
+  const dispatch = useDispatch();
+  const employees = employeesStore.employees;
 
   React.useEffect(()=>{
     appContext?.setBackBtnUrl(URLS.DASHBOARD);
@@ -40,11 +44,10 @@ const Dashboard = () => {
         return;
       }
 
-      if (setEmployees) {
-        setEmployees(response.data as EmployeesData);
-      }
+      const employees = response.data as EmployeesData;
+      dispatch(setUsers(employees))
     })();
-  }, [setEmployees, debouncedSearch, selectedDepartment, sortedEmployees]);
+  }, [debouncedSearch, selectedDepartment, sortedEmployees]);
 
   const onDepartmentSelect = (eventKey: any, event: any) => {
     event.preventDefault();
@@ -53,7 +56,7 @@ const Dashboard = () => {
     setSelectedDepartment(eventKey)
   }
 
-  const showZeroState = employees?.employees.length === 0;
+  const showZeroState = employees.length === 0;
   const departmentFilterLabel = selectedDepartment === 'All' ? 'Filter by Department' : selectedDepartment;
   const activeSortClass = sortedEmployees === 'asc' || sortedEmployees === 'desc' ? 'bg-slate-500' : '';
 
@@ -169,7 +172,7 @@ const Dashboard = () => {
                       </Row>
                     </ListGroup.Item>
                     {
-                      employees?.employees.map((employee) => {
+                      employees.map((employee) => {
                         return (
                           <ListGroup.Item
                             action

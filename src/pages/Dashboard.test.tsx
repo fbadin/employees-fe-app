@@ -1,25 +1,22 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Dashboard } from './Dashboard';
 import { AppContext } from '../contexts/appContext';
-import { URLS } from '../routes';
 import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
+import { Provider } from 'react-redux';
 
-const employeesData = {
-	employees: [
-		{ id: '1', name: 'John Snow', position: 'Software Developer', department: 'Engineering' },
-	],
+import { Dashboard } from './Dashboard';
+import { URLS } from '../routes';
+import { EmployeesData } from '../api/employees';
+import * as ACTIONS from '../state/employees/actions';
+import { store } from '../state/store';
+import { ApiResponse } from '../lib/api';
+import { fetchEmployees } from '../api/employees';
+
+const employeesData: EmployeesData = {
+  employees: [
+    { id: '1', name: 'John Snow', position: 'Software Developer', department: 'Engineering' },
+  ],
 }
-
-beforeEach(()=>{
-	global.fetch = jest.fn().mockImplementation((url, options) => {
-		return Promise.resolve({
-			status: 200,
-			ok: true,
-			json: async () => employeesData,
-		});
-	}) as jest.Mock;
-})
 
 // Mock useNavigate
 const mockNavigate = jest.fn();
@@ -34,36 +31,58 @@ jest.mock('react-toastify', () => ({
   },
 }));
 
+jest.mock('../api/employees', ()=>({
+  ...jest.requireActual('../api/employees'),
+  fetchEmployees: jest.fn()
+}))
+
+jest.mock('../state/employees/actions', ()=>({
+  ...jest.requireActual('../state/employees/actions'),
+  setUsers: jest.fn()
+}))
+
 jest.useFakeTimers();
 
 const mockSetBackBtnUrl = jest.fn();
-const mockSetEmployees = jest.fn();
 
 const mockAppContextValue = {
-  employees: {
-    employees: [],
-  },
-  setEmployees: mockSetEmployees,
-	backBtnUrl: '/dashboard',
+  backBtnUrl: '/dashboard',
   setBackBtnUrl: mockSetBackBtnUrl,
 };
 
 const renderDashboard = async () => {
   await act(async () => {
-		render(
-			<AppContext.Provider value={mockAppContextValue}>
-				<BrowserRouter>
-					<Dashboard />
-				</BrowserRouter>
-			</AppContext.Provider>
-		);
-	});
+    render(
+      <Provider store={store}>
+        <AppContext.Provider value={mockAppContextValue}>
+          <BrowserRouter>
+            <Dashboard />
+          </BrowserRouter>
+        </AppContext.Provider>
+      </Provider>
+    );
+  });
 };
 
 describe('Dashboard', () => {
+  let fetchEmployeesMock: jest.Mock<Promise<ApiResponse<EmployeesData>>>;
+
+  beforeEach(() => {
+    (ACTIONS.setUsers as jest.Mock).mockImplementation(()=>({ type: 'SET_USERS', payload: employeesData }))
+
+    const fetchEmployeesLib = fetchEmployees as unknown as jest.Mock;
+    fetchEmployeesMock = jest.fn().mockImplementation(()=>({ data: employeesData }));
+    fetchEmployeesLib.mockImplementation(fetchEmployeesMock);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the Dashboard component', async () => {
     await renderDashboard();
     expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+    expect(ACTIONS.setUsers).toHaveBeenCalledWith(employeesData);
   });
 
   it('sets the back button URL on mount', async () => {
@@ -78,8 +97,7 @@ describe('Dashboard', () => {
     await act(async () => {
       jest.advanceTimersByTime(500);
     });
-    expect(mockSetEmployees).toHaveBeenCalledTimes(2);
-		expect(mockSetEmployees).toHaveBeenCalledWith(employeesData);
+    expect(fetchEmployeesMock).toHaveBeenCalledWith("", "All", "asc");
   });
 
   it('handles department filter selection', async () => {
@@ -91,19 +109,13 @@ describe('Dashboard', () => {
     await act(async () => {
       jest.advanceTimersByTime(500);
     });
-		expect(mockSetEmployees).toHaveBeenCalledTimes(2);
-    expect(mockSetEmployees).toHaveBeenCalledWith(employeesData);
+    expect(fetchEmployeesMock).toHaveBeenCalledWith("", "Engineering", "none");
   });
 
   it('displays zero state when no employees are found', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: async () => ({ employees: [] }),
-      }),
-    ) as jest.Mock;
-
+    (ACTIONS.setUsers as jest.Mock).mockImplementation(()=>({ type: 'SET_USERS', payload: { employees: []}}))
     await renderDashboard();
+
     await act(async () => {
       jest.advanceTimersByTime(500);
     });
@@ -117,7 +129,6 @@ describe('Dashboard', () => {
     await act(async () => {
       jest.advanceTimersByTime(1000);
     });
-		expect(mockSetEmployees).toHaveBeenCalledTimes(2);
-    expect(mockSetEmployees).toHaveBeenCalledWith(employeesData)
+    expect(fetchEmployeesMock).toHaveBeenCalledWith("John", "All", "none");
   });
 });
