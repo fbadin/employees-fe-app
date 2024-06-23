@@ -14,6 +14,7 @@ A Dashboard project to manage Employees, created using Create React App, Redux, 
 - Implemented a `Custom Hook` useDebounce to prevent over-fetching data from the employees' index endpoint.
 - Added `React Router` to route URLs for the Dashboard and Employee Details/Management. Routes default to the Dashboard if not found.
 - Created a composable layout  `CommonTemplate` to handle the layout of the app.
+- Implemented the app using only `Tailwind`.
 - Added a Navbar.
 - Implemented a `Responsive Layout`.
 - Added tests in `Jest` and `React Testing Library (RTL)`
