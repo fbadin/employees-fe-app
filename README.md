@@ -3,7 +3,20 @@
 
 ## Description
 
-A Dashboard project to manage Employees, created using Create React App, Tailwind, and React Bootstrap.
+A Dashboard project to manage Employees, created using Create React App, Redux, Tailwind, and React Bootstrap.
+
+---
+
+## Features Overview
+
+- Utilized `React Context` to manage the state of the app enabling future scalability.
+- Used `Redux` to manage the state of employees' data.
+- Implemented a `Custom Hook` useDebounce to prevent over-fetching data from the employees' index endpoint.
+- Added `React Router` to route URLs for the Dashboard and Employee Details/Management. Routes default to the Dashboard if not found.
+- Created a composable layout  `CommonTemplate` to handle the layout of the app.
+- Added a Navbar.
+- Implemented a `Responsive Layout`.
+- Added tests in `Jest` and `React Testing Library (RTL)`
 
 ---
 
@@ -60,15 +73,6 @@ This sample project is only available for local testing.
 
 ---
 
-## Features Overview
-
-- Utilized React Context to manage the state of the employees list, enabling future scalability.
-- Added React Router to route URLs for the Dashboard and Employee Details/Management. Routes default to the Dashboard if not found.
-- Created a composable `CommonTemplate` to handle the layout of the app.
-- Added a Navbar.
-- Implemented a responsive layout.
-
----
 
 ## The Dashboard
 
@@ -94,15 +98,9 @@ This sample project is only available for local testing.
 
 ## Extra
 
-- Implemented a custom hook `useDebounce` to prevent over-fetching data from the employees' index endpoint.
+
 - Created custom API utilities to wrap the fetch API, enhancing scalability over networking and ensuring strong data-typing on responses.
 - Developed custom UI components such as Button and a Panel.
 - Added automated tests using Jest for most of the components.
-
----
-
-## The Backend
-
-The backend was developed using Node.js, Express.js, and MongoDB. Feel free to contact the developer if you wish to test the backend server on your local machine.
 
 ---
