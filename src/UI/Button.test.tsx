@@ -56,4 +56,13 @@ describe('Button component', () => {
 
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
+
+  describe('when dataTestId is set on button', ()=>{
+    it('should be visible', ()=>{
+      const dataTestIdName = 'my-data-test-id-button'
+      render(<Button children="Custom dataTestId Button" onClick={()=>{}} dataTestId={dataTestIdName} />);
+      const button = screen.getByTestId(dataTestIdName);
+      expect(button).toBeDefined();
+    })
+  })
 });

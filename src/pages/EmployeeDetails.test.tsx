@@ -118,7 +118,9 @@ describe('EmployeeDetails', () => {
     fireEvent.change(screen.getByLabelText('Salary'), { target: { value: '70000' } });
     fireEvent.change(screen.getByLabelText('Start Date'), { target: { value: '2024-06-01' } });
 
-    fireEvent.click(screen.getByText('Save Employee'));
+    const saveButton = screen.getByTestId('save-button');
+
+    fireEvent.click(saveButton);
 
     await waitFor(() => expect(createEmployee).toHaveBeenCalled());
 

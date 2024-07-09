@@ -377,6 +377,7 @@ const EmployeeDetails = () => {
                     variant='primary'
                     disabled={!isValidForm}
                     onClick={handleSubmit}
+                    dataTestId={isNewEmployee ? 'save-button' : 'update-button'}
                   >
                     <div className='flex justify-center items-center gap-2'>
                       {

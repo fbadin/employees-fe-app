@@ -47,7 +47,7 @@ const Dashboard = () => {
       const employees = response.data as EmployeesData;
       dispatch(setUsers(employees))
     })();
-  }, [debouncedSearch, selectedDepartment, sortedEmployees]);
+  }, [dispatch, debouncedSearch, selectedDepartment, sortedEmployees]);
 
   const onDepartmentSelect = (eventKey: any, event: any) => {
     event.preventDefault();
@@ -65,7 +65,11 @@ const Dashboard = () => {
       <div className='flex justify-between items-center'>
         <h1 className="text-lg">Employee Dashboard</h1>
 
-        <Button variant='primary' onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}>
+        <Button
+          variant='primary'
+          onClick={()=> navigate(URLS.EMPLOYEE_DETAILS(null))}
+          dataTestId={'new-employee-button'}
+        >
           <div className='flex justify-center items-center gap-2'>
             <PersonPlus /> <div className='whitespace-nowrap' >New Employee</div>
           </div>
@@ -115,7 +119,9 @@ const Dashboard = () => {
           </InputGroup>
         </div>
 
-        <Dropdown onSelect={onDepartmentSelect}>
+        <Dropdown onSelect={onDepartmentSelect}
+          data-testid="departments-filter-dropdown"
+        >
           <Dropdown.Toggle className='bg-dark-2 border'>
             {departmentFilterLabel}
           </Dropdown.Toggle>
@@ -134,6 +140,7 @@ const Dashboard = () => {
                     key={department}
                     eventKey={department}
                     active={selectedDepartment === department}
+                    data-testid={`departments-filter-button-${department}`}
                   >
                     {department}
                   </Dropdown.Item>
@@ -179,6 +186,7 @@ const Dashboard = () => {
                             key={employee.id}
                             variant="light"
                             onClick={() => navigate(URLS.EMPLOYEE_DETAILS(employee.id))}
+                            data-testid={`employee-row-${employee.id}`}
                           >
                             <Row>
                               <Col>{employee.name}</Col>

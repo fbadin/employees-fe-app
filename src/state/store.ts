@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 import employeesReducer from "./employees/reducer";
 
 export const store = configureStore({

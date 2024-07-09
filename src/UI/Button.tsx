@@ -6,6 +6,7 @@ type Props = {
   variant?: 'primary' | 'danger';
   className?: string;
   disabled?: boolean;
+  dataTestId?: string;
   onClick: ()=>void;
 }
 
@@ -14,6 +15,7 @@ const Button = ({
   variant,
   className,
   disabled,
+  dataTestId,
   onClick
 }: Props) => {
   const primaryClasses = variant === `primary` ? '!bg-primary !border-primary hover:bg-primary hover:border-primary' : ''
@@ -21,7 +23,7 @@ const Button = ({
 
   return (
     <ReactButton
-      data-testid='custom-button'
+      data-testid={dataTestId || 'custom-button'}
       className={customClassName}
       onClick={onClick}
       variant={variant}
